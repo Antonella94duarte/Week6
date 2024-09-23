@@ -36,19 +36,25 @@ function formatDate(date) {
   return `${formattedDay} ${hours}:${minutes}`;
 }
 
-let searchForm = document.querySelector("#search-form");
-searchForm.addEventListener("submit", search);
+function handleSearchSubmit(event) {
+  event.preventDefault();
+  let searchForm = document.querySelector("#search-input");
+  searchCity(searchForm.value);
+}
+let searchFormElement = document.querySelector("#search-form");
+searchFormElement.addEventListener("submit", handleSearchSubmit);
 
-let currentDateELement = document.querySelector("#current-date");
-let currentDate = new Date();
-
-currentDateELement.innerHTML = formatDate(currentDate);
+searchCity("Paris");
 
 function displayWeather(response) {
   let cityElement = document.querySelector("#current-city");
   let temperatureElement = document.querySelector("#current-temperature");
   let humidityElement = document.querySelector("#current-humidity");
   let windElement = document.querySelector("#current-wind");
+  let timeElement = document.querySelector("#current-date");
+  let timestamp = response.data.time;
+  let date = new Date(response.data.time * 1000);
+  let iconElement = document.querySelector("#icon");
 
   let temperature = Math.round(response.data.temperature.current);
   let city = response.data.city;
@@ -59,6 +65,8 @@ function displayWeather(response) {
   temperatureElement.innerHTML = temperature;
   humidityElement.innerHTML = `${humidity}%`;
   windElement.innerHTML = `${wind} km/h`;
+  timeElement.innerHTML = formatDate(date);
+  iconElement.innerHTML = `<img src="${response.data.condition.icon_url}" class="weather-app-icon" />`;
 }
 
 function searchCity(city) {
